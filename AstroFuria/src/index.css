@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+:root {
+  --c-cyan: #00f0ff;
+  --c-mag: #ff2d78;
+  --c-amber: #ffb400;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #04070f;
+  color: #d9ecff;
+  font-family: "Chakra Petch", "Trebuchet MS", sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-disp {
+  font-family: "Orbitron", "Chakra Petch", sans-serif;
+}
+
+/* ---------- pannelli HUD / arcade ---------- */
+.cut {
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+}
+.cut-sm {
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+}
+
+.hud-panel {
+  background: rgba(4, 13, 27, 0.86);
+  border: 1px solid rgba(0, 240, 255, 0.32);
+  box-shadow:
+    0 0 18px rgba(0, 240, 255, 0.07),
+    inset 0 0 26px rgba(0, 240, 255, 0.04);
+}
+
+.hud-label {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(0, 240, 255, 0.72);
+}
+
+.hud-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: rgba(4, 13, 27, 0.86);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: #7fdcff;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+  clip-path: polygon(
+    6px 0,
+    100% 0,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    0 100%,
+    0 6px
+  );
+}
+.hud-btn:hover {
+  background: rgba(0, 240, 255, 0.16);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+}
+
+/* ---------- bottoni ---------- */
+.btn-arcade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #bffcff;
+  background: linear-gradient(180deg, rgba(0, 240, 255, 0.18), rgba(0, 240, 255, 0.05));
+  border: 1px solid rgba(0, 240, 255, 0.65);
+  transition:
+    transform 0.12s,
+    box-shadow 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+.btn-arcade:hover {
+  color: #ffffff;
+  background: rgba(0, 240, 255, 0.24);
+  box-shadow:
+    0 0 30px rgba(0, 240, 255, 0.4),
+    inset 0 0 18px rgba(0, 240, 255, 0.15);
+  transform: translateY(-1px);
+}
+.btn-arcade:active {
+  transform: translateY(1px) scale(0.99);
+}
+.pulse-start {
+  animation: startPulse 1.7s ease-in-out infinite;
+}
+@keyframes startPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 34px rgba(0, 240, 255, 0.5),
+      inset 0 0 16px rgba(0, 240, 255, 0.12);
+  }
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #8fb7d9;
+  background: transparent;
+  border: 1px solid rgba(143, 183, 217, 0.35);
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.btn-ghost:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.keycap {
+  display: inline-block;
+  min-width: 26px;
+  text-align: center;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #bffcff;
+  background: rgba(10, 26, 46, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-bottom-width: 3px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ---------- effetti schermo ---------- */
+.fx-scan {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(210, 240, 255, 0.03) 0px,
+    rgba(210, 240, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+.fx-vignette {
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.52) 100%);
+}
+
+.title-chroma {
+  text-shadow:
+    4px 0 0 rgba(255, 45, 120, 0.5),
+    -4px 0 0 rgba(0, 240, 255, 0.55),
+    0 0 46px rgba(0, 240, 255, 0.22);
+}
+
+/* ---------- HUD dinamica ---------- */
+.life {
+  opacity: 0.15;
+  transition:
+    opacity 0.25s,
+    filter 0.25s;
+}
+.life.on {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+}
+.power-slot {
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+.power-slot.on {
+  opacity: 1;
+}
+.hot {
+  color: #ffb400 !important;
+  text-shadow: 0 0 12px rgba(255, 180, 0, 0.85);
+}
+
+.record-badge {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  background: var(--c-amber);
+  color: #201300;
+  padding: 7px 12px 6px;
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+  animation: badgePulse 0.9s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.4);
+  }
+}
+
+/* ---------- animazioni UI ---------- */
+.blinker {
+  animation: blinker 1.15s steps(1) infinite;
+}
+@keyframes blinker {
+  0%,
+  58% {
+    opacity: 1;
+  }
+  59%,
+  100% {
+    opacity: 0.1;
+  }
+}
+
+.rise {
+  animation: riseIn 0.55s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+.rise-1 {
+  animation-delay: 0.08s;
+}
+.rise-2 {
+  animation-delay: 0.16s;
+}
+.rise-3 {
+  animation-delay: 0.24s;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.banner-anim {
+  animation: bannerIn 2.2s cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+}
+@keyframes bannerIn {
+  0% {
+    transform: scale(1.7) skewX(-8deg);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  14% {
+    transform: scale(1) skewX(-8deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  78% {
+    transform: scale(1) skewX(-8deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.94) skewX(-8deg);
+    opacity: 0;
+  }
+}
+
+.led-dot {
+  animation: ledBlink 1.4s ease-in-out infinite;
+}
+@keyframes ledBlink {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.9);
+  }
+  50% {
+    opacity: 0.25;
+    box-shadow: none;
+  }
+}

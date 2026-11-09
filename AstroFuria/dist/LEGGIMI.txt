@@ -1,0 +1,37 @@
+==========================================
+  ASTROFURIA - sparatutto arcade spaziale
+==========================================
+
+COME SI GIOCA DALLA CHIAVETTA
+-----------------------------
+1. Inserisci la chiavetta USB nel PC.
+2. Apri la cartella della chiavetta.
+3. Doppio click su GIOCA.bat (Windows)
+   oppure su index.html (qualsiasi sistema).
+4. Il gioco si apre nel browser. Nessun
+   server, nessuna installazione, nessuna
+   connessione internet necessaria.
+
+COMANDI
+-------
+W / freccia su   vola verso il puntatore e fermati li
+A S D            spostati rispetto al puntatore
+MOUSE            mira
+CLICK / SPAZIO   fuoco
+P / ESC          pausa
+M                audio on/off
+F11              schermo intero (consigliato!)
+
+RECORD
+------
+Il record viene salvato nel browser del PC
+su cui giochi (localStorage). Ogni PC (o
+ogni browser) ha il suo record.
+
+PESO
+----
+Tutto il gioco pesa circa 340 KB: grafica,
+suoni e font sono generati dal codice.
+
+Su Mac: doppio click su index.html.
+Su Linux: apri index.html con il browser.
