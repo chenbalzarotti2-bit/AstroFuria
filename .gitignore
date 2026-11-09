@@ -1,0 +1,31 @@
+# ── Dipendenze ──────────────────────────────────────────────
+node_modules/
+
+# ── Variabili d'ambiente e segreti (MAI committare!) ────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials*
+id_rsa*
+id_ed25519*
+
+# ── Build e artefatti rigenerabili ──────────────────────────
+dist-*/
+*.tsbuildinfo
+
+# ── Log e temporanei ────────────────────────────────────────
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE / editor ────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
