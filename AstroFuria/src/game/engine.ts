@@ -153,7 +153,6 @@ export class AstroEngine {
   private ctx: CanvasRenderingContext2D;
   private cb: EngineCallbacks;
   private raf = 0;
-  private last = performance.now();
   private tGlobal = 0;
   private dpr = 1;
   private W = 0;
@@ -198,6 +197,19 @@ export class AstroEngine {
   private elapsed = 0;
 
   private listeners: Array<[EventTarget, string, EventListener]> = [];
+  /* frame "perso" (scheda in background): al ritorno non simulare il tempo
+     mancante — la fisica con dt enorme farebbe scavalcare collisioni e muri. */
+  private lastTs = -1;
+  /* oggetto HUD riusato a ogni frame (niente allocazioni nel loop) */
+  private hud: HudData = {
+    score: 0,
+    best: 0,
+    lives: 3,
+    wave: 1,
+    comboMult: 1,
+    comboFrac: 0,
+    power: { triple: 0, rapid: 0, shield: 0 },
+  };
 
   constructor(canvas: HTMLCanvasElement, cb: EngineCallbacks) {
     this.canvas = canvas;
@@ -214,14 +226,14 @@ export class AstroEngine {
     this.pl.x = window.innerWidth / 2;
     this.pl.y = window.innerHeight / 2;
 
-    this.onResize();
+    this.applyResize();
     this.seedMenuField();
 
     const on = (t: EventTarget, e: string, f: EventListener) => {
       t.addEventListener(e, f);
       this.listeners.push([t, e, f]);
     };
-    on(window, "resize", this.onResize);
+    on(window, "resize", this.scheduleResize);
     on(window, "keydown", this.onKeyDown);
     on(window, "keyup", this.onKeyUp);
     on(window, "mousemove", this.onMouseMove);
@@ -234,8 +246,10 @@ export class AstroEngine {
     this.raf = requestAnimationFrame(this.tick);
   }
 
+  /* pulizia: ferma il loop, azzera i timer e toglie tutti i listener */
   destroy() {
     cancelAnimationFrame(this.raf);
+    window.clearTimeout(this.onResizeTimer);
     for (const [t, e, f] of this.listeners) t.removeEventListener(e, f);
     this.listeners = [];
   }
@@ -365,7 +379,16 @@ export class AstroEngine {
     this.mouse.down = false;
   };
 
-  private onResize = () => {
+  private onResizeTimer = 0;
+
+  /* il drag del bordo finestra spara decine di eventi/s: si ricalcola lo
+     sfondo (gradient a schermo intero) una sola volta, a resize finito */
+  private scheduleResize = () => {
+    window.clearTimeout(this.onResizeTimer);
+    this.onResizeTimer = window.setTimeout(() => this.applyResize(), 150);
+  };
+
+  private applyResize = () => {
     this.W = window.innerWidth;
     this.H = window.innerHeight;
     this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -726,8 +749,12 @@ export class AstroEngine {
 
   private tick = (t: number) => {
     this.raf = requestAnimationFrame(this.tick);
-    const dt = clamp((t - this.last) / 1000, 0, 0.033);
-    this.last = t;
+    /* dt robusto: se la scheda va in background o il tab riprende, il gap
+       verrebbe "recuperato" in un frame solo → teleportazioni, collisioni
+       scavalcate e ondata già persa. Qui si riparte sempre da dt≈0. */
+    const raw = this.lastTs < 0 ? 0 : (t - this.lastTs) / 1000;
+    this.lastTs = t;
+    const dt = clamp(raw, 0, 0.033);
     this.tGlobal += dt;
     if (this.phase === "playing") this.update(dt);
     else if (this.phase === "menu" || this.phase === "over") this.updateAmbient(dt);
@@ -1104,19 +1131,20 @@ export class AstroEngine {
 
     this.updateFx(dt);
 
-    this.cb.onHud({
-      score: this.score,
-      best: this.best,
-      lives: this.lives,
-      wave: this.wave,
-      comboMult: this.comboMult(),
-      comboFrac: this.comboKills > 0 ? clamp(this.comboT / 3.5, 0, 1) : 0,
-      power: {
-        triple: this.tripleT / 10,
-        rapid: this.rapidT / 8,
-        shield: this.shieldT / 12,
-      },
-    });
+    /* HUD: l'oggetto creato ogni frame fa scattare il GC a 60Hz (micro-stutter
+       sulle macchine più lente). Si riusa lo stesso oggetto: la callback legge
+       i valori subito, e React applica le DOM diff solo se qualcosa cambia. */
+    const hud = this.hud;
+    hud.score = this.score;
+    hud.best = this.best;
+    hud.lives = this.lives;
+    hud.wave = this.wave;
+    hud.comboMult = this.comboMult();
+    hud.comboFrac = this.comboKills > 0 ? clamp(this.comboT / 3.5, 0, 1) : 0;
+    hud.power.triple = this.tripleT / 10;
+    hud.power.rapid = this.rapidT / 8;
+    hud.power.shield = this.shieldT / 12;
+    this.cb.onHud(hud);
   }
 
   /* ================= rendering ================= */
